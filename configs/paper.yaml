@@ -1,0 +1,109 @@
+profile: paper
+seed: 2025
+data_revision: paper-datasets-unversioned-v1
+deterministic: true
+device: auto
+data_root: data
+output_root: outputs/paper
+num_workers: 8
+
+datasets:
+  - cifar10
+  - mnist
+  - fashion_mnist
+  - tiny_imagenet
+  - brats
+  - lung_mask
+  - kvasir_seg
+  - stanford_dogs
+  - inaturalist
+  - plant_village
+  - chest_xray14
+  - svhn
+  - eurosat
+  - caltech101
+  - flowers102
+  - food101
+
+encoders:
+  - resnet18
+  - convnext_tiny
+  - vit_base_patch16_224
+  - efficientnet_b0
+  - regnety_004
+  - wide_resnet50_2
+  - mobilenetv2_100
+  - swin_tiny_patch4_window7_224
+
+methods: [mocov2, simclr]
+
+classification:
+  angles: {start: 0.0, stop: 359.9, step: 0.1, inclusive: true}
+  image_size: 224
+  pretrain:
+    imagenet_initialized: true
+    batch_size: 64
+    epochs: 200
+    learning_rate: 0.03
+    momentum: 0.9
+    weight_decay: 0.0001
+    projection_dim: 128
+    projection_hidden_dim: 2048
+    temperature: 0.2
+    moco_momentum: 0.999
+    queue_size: 65536
+  probe:
+    split: 0.8
+    batch_size: 64
+    epochs: 20
+    learning_rate: 0.015
+    momentum: 0.9
+    weight_decay: 0.0
+    hidden_dims: [1024, 512, 256, 128, 64]
+
+prediction:
+  train_size: 10
+  sample_size: 20
+  epochs: 200
+  learning_rate: 0.01
+  trials: 100
+  evaluation_repetitions: 100
+  metrics: [cosine, l2]
+
+segmentation:
+  datasets: [brats, kvasir_seg, lung_mask]
+  encoders: [convnext_tiny, vit_base_patch16_224, resnet50]
+  angles: {start: 0, stop: 360, step: 1, inclusive: true}
+  image_size: 224
+  pretrain:
+    imagenet_initialized: true
+    batch_size: 32
+    epochs: 200
+    learning_rate: 0.03
+    momentum: 0.9
+    weight_decay: 0.0001
+    projection_dim: 128
+    projection_hidden_dim: 2048
+    temperature: 0.2
+    moco_momentum: 0.999
+    queue_size: 65536
+  supervised:
+    batch_size: 16
+    epochs: 100
+    learning_rate: 0.0001
+    weight_decay: 0.00001
+    validation_fraction: 0.1
+    test_fraction: 0.2
+    early_stopping_patience: 10
+
+hog:
+  datasets: [brats, kvasir_seg, lung_mask]
+  angles: {start: 0, stop: 360, step: 1, inclusive: true}
+  image_size: 256
+  pixels_per_cell: [64, 64]
+  cells_per_block: [1, 1]
+  orientations: 9
+  cv_folds: 5
+  test_fraction: 0.2
+  c_grid: [0.1, 1.0, 10.0]
+  gamma_grid: [scale, auto]
