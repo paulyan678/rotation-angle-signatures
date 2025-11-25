@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this reproduction package, please cite the paper and this software."
+title: "Rotation Angle Signatures: Reproduction Package"
+type: software
+authors:
+  - family-names: Yan
+    given-names: Paul
+repository-code: "https://github.com/paulyan678/rotation-angle-signatures"
+license: MIT
+version: 0.1.0
+date-released: 2026-07-13
+preferred-citation:
+  type: conference-paper
+  title: "Response Patterns to Rotation Angle in a Rotation Pretext Task Vary Across Datasets and Architectures: An Observation and a Negative Result"
+  authors:
+    - family-names: Yan
+      given-names: Paul
+    - family-names: Saranchuk
+      given-names: Amy
+    - family-names: Guerzhoy
+      given-names: Michael
+  year: 2025
+  conference:
+    name: "Symmetry and Geometry in Neural Representations"
+
