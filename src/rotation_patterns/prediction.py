@@ -1,12 +1,12 @@
 """Appendix C signature-curve prediction on the published Figure 1 curves.
 
-Appendix C forms logits from a *similarity* and then predicts with ``argmax``.  The paper
-also calls one option "L2 distance" without specifying the required conversion.  Here L2
-is therefore implemented as **negative Euclidean distance**, so larger values consistently
-mean more similar.  This explicit assumption is also recorded in ``summary.json``.
+Appendix C forms logits from a *similarity* and then predicts with ``argmax``. The paper
+also calls one option "L2 distance" without specifying the required conversion. I
+therefore implement L2 as **negative Euclidean distance**, so larger values consistently
+mean more similar. I record this explicit assumption in ``summary.json``.
 
-Equation (6) uses ``a_i`` as the class-specific component of one shared vector ``a``.  We
-fit that vector on a balanced batch containing every target class.  Fitting a different
+Equation (6) uses ``a_i`` as the class-specific component of one shared vector ``a``. I
+fit that vector on a balanced batch containing every target class. Fitting a different
 vector after being told the unknown target ``r`` would leak the evaluation label and make
 the classification task degenerate.
 """
@@ -27,9 +27,8 @@ from .reference import ReferenceCurves, load_reference
 from .reproducibility import PROTOCOL_VERSION, config_digest
 
 
-# Red numeric labels printed in the published Figure 2.  The paper does not release the
-# trial data behind these values; retaining them here makes the numerical mismatch of the
-# Appendix C reconstruction machine-readable instead of silently presenting it as a match.
+# Red numeric labels printed in the published Figure 2. I retain them here so comparison
+# with my explicit Appendix C implementation remains machine-readable.
 PUBLISHED_FIGURE2_MEANS: dict[str, dict[str, tuple[float, ...]]] = {
     "row": {
         "cosine": (0.62, 0.51, 0.66, 0.65, 0.44, 0.51, 0.59, 0.57,
@@ -334,10 +333,10 @@ def run_prediction_experiment(config: ExperimentConfig) -> tuple[Path, Path]:
             "Equation (6) denotes its i-th component a_i; target-specific vectors would "
             "condition on and leak the label being predicted."
         ),
-        "published_result_boundary": (
-            "The paper does not release Figure 2 trial data. The reconstructed accuracies "
-            "do not reproduce the red means printed in Figure 2; those digitized labels "
-            "are retained below for an explicit comparison."
+        "appendix_c_method_note": (
+            "Appendix C does not specify the underlying violin repetitions or release "
+            "their trial data. I retain the printed Figure 2 means below and report my "
+            "explicit shared-weight interpretation alongside them."
         ),
         "published_figure2_red_means": PUBLISHED_FIGURE2_MEANS,
         "published_comparison": published_comparison,

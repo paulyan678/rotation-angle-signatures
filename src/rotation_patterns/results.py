@@ -9,7 +9,7 @@ from typing import Any
 
 import pandas as pd
 
-from .reproducibility import stable_job_id
+from .reproducibility import PROTOCOL_VERSION, stable_job_id
 
 
 REQUIRED_RESULT_KEYS = {
@@ -72,6 +72,8 @@ def aggregate_results(
             "config_sha256"
         )
         if config_sha256 is not None and fingerprint != config_sha256:
+            continue
+        if config_sha256 is not None and row.get("protocol_version") != PROTOCOL_VERSION:
             continue
         if config_sha256 is not None:
             missing_identity = [key for key in JOB_KEYS if key not in row]
