@@ -73,13 +73,14 @@ python -m pip install -e .
 
 ## Explore my published Figure 1 and curve analysis
 
-I archive the 256 original Figure 1 curves (921,600 measurements) at an immutable commit in
-[`paulyan678/thesis`](https://github.com/paulyan678/thesis). This project's data command
-fetches only those experimental CSVs, validates the full 16×16×3,600 tensor, and keeps the
-published measurements separate from newly generated runs.
+I include the 256 original Figure 1 curves (921,600 measurements) in this repository as a
+lossless compressed artifact at
+`src/rotation_patterns/reference_data/figure1_curves.npz`. The data command validates its
+artifact and tensor checksums, verifies the full 16×16×3,600 schema, and stages a working
+copy separately from newly generated runs.
 
 ```bash
-# Fetch and validate my published curve data.
+# Stage and validate my bundled curve data.
 rotation-patterns fetch-reference --config configs/paper.yaml
 
 # Generate the 16×16 accuracy-versus-angle grid.
@@ -196,7 +197,7 @@ outputs/                 generated artifacts (gitignored)
 ## License and citation
 
 I release the code under the [MIT License](LICENSE). Dataset and pretrained-weight
-licenses remain with their respective owners. I fetch my original curve measurements from
-their pinned research archive rather than duplicating them here.
+licenses remain with their respective owners. I include my original curve measurements as
+a checksummed research artifact in this project.
 
 If you use this project, please cite the paper and software using [CITATION.cff](CITATION.cff).

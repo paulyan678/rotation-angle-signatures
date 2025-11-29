@@ -35,7 +35,7 @@ def test_smoke_manifests_are_complete_and_indexable(tmp_path: Path) -> None:
     assert first["angle"] == 0.0
     assert len(first["job_id"]) == 16
     assert len(first["config_sha256"]) == 64
-    assert first["protocol_version"] == "0.2.0"
+    assert first["protocol_version"] == "0.3.0"
 
 
 def test_manifest_rewrite_removes_stale_shards(tmp_path: Path) -> None:
