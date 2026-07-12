@@ -1,0 +1,86 @@
+profile: smoke
+seed: 2025
+data_revision: synthetic-v1
+deterministic: true
+device: cpu
+data_root: data
+output_root: outputs/smoke
+num_workers: 0
+
+datasets: [synthetic_a, synthetic_b]
+encoders: [tiny_cnn, tiny_cnn_wide]
+methods: [mocov2, simclr]
+
+classification:
+  angles: {start: 0, stop: 315, step: 45, inclusive: true}
+  image_size: 32
+  max_samples: 32
+  pretrain:
+    imagenet_initialized: false
+    batch_size: 8
+    epochs: 1
+    learning_rate: 0.01
+    momentum: 0.9
+    weight_decay: 0.0
+    projection_dim: 16
+    projection_hidden_dim: 32
+    temperature: 0.2
+    moco_momentum: 0.99
+    queue_size: 32
+  probe:
+    split: 0.75
+    batch_size: 8
+    epochs: 1
+    learning_rate: 0.015
+    momentum: 0.9
+    weight_decay: 0.0
+    hidden_dims: [32, 24, 16, 12, 8]
+
+prediction:
+  train_size: 2
+  sample_size: 4
+  epochs: 5
+  learning_rate: 0.01
+  trials: 10
+  evaluation_repetitions: 10
+  metrics: [cosine, l2]
+
+segmentation:
+  datasets: [synthetic_a]
+  encoders: [tiny_cnn]
+  angles: {start: 0, stop: 90, step: 90, inclusive: true}
+  image_size: 32
+  max_samples: 16
+  pretrain:
+    imagenet_initialized: false
+    batch_size: 4
+    epochs: 1
+    learning_rate: 0.01
+    momentum: 0.9
+    weight_decay: 0.0
+    projection_dim: 16
+    projection_hidden_dim: 32
+    temperature: 0.2
+    moco_momentum: 0.99
+    queue_size: 16
+  supervised:
+    batch_size: 4
+    epochs: 1
+    learning_rate: 0.001
+    weight_decay: 0.0
+    validation_fraction: 0.2
+    test_fraction: 0.2
+    early_stopping_patience: 2
+
+hog:
+  datasets: [synthetic_a]
+  angles: {start: 0, stop: 90, step: 45, inclusive: true}
+  image_size: 32
+  max_samples: 16
+  pixels_per_cell: [8, 8]
+  cells_per_block: [1, 1]
+  orientations: 9
+  cv_folds: 2
+  test_fraction: 0.2
+  c_grid: [1.0]
+  gamma_grid: [scale]
