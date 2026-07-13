@@ -4,7 +4,8 @@
 [![Paper](https://img.shields.io/badge/paper-OpenReview-b31b1b)](https://openreview.net/forum?id=85rdlgTS50)
 
 This repository contains the complete executable research code and experiment toolkit for
-my University of Toronto thesis research project:
+my thesis research project in the Engineering Science program at the University of
+Toronto:
 
 > **Response Patterns to Rotation Angle in a Rotation Pretext Task Vary Across Datasets
 > and Architectures: An Observation and a Negative Result**
