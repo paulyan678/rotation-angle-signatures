@@ -73,8 +73,8 @@ keep the original and rotated view of each image in the same train/test group an
 
 ## Research artifacts
 
-- I archive all 256 original Figure 1 curve CSVs in `paulyan678/thesis` commit
-  `bf9d887337`; the `fetch-reference` command pins and validates them.
+- I include all 256 original Figure 1 curves as the checksummed, lossless
+  `figure1_curves.npz` artifact; `fetch-reference` validates and stages it locally.
 - I run the prediction implementation on the actual 16×16×3,600 curve tensor and save all
   repetition-level results plus summary comparisons.
 - I generate Figure 3 tables through the configured MoCo-to-U-Net and HoG pipelines.

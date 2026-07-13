@@ -1,0 +1,12 @@
+{
+  "artifact": "figure1_curves.npz",
+  "artifact_sha256": "3d1ff1719a8eb7be1e227099edf73211a7c227bf1087238909264b071144881a",
+  "description": "Original Figure 1 rotation-angle accuracy measurements",
+  "dtype": "float64",
+  "tensor_sha256": "76fedf1d7768a177013287d86c1ab6f8f9da4516768876f12741f2bfa5b3a931",
+  "tensor_shape": [16, 16, 3600],
+  "angle_start": 0.0,
+  "angle_stop": 359.9,
+  "angle_step": 0.1,
+  "measurement_count": 921600
+}

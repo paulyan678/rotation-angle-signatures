@@ -94,7 +94,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     reference = subparsers.add_parser(
-        "fetch-reference", help="fetch and validate my published curve CSVs"
+        "fetch-reference", help="stage and validate my bundled Figure 1 measurements"
     )
     reference.add_argument("--config", type=Path, required=True)
 
