@@ -64,7 +64,7 @@ def _run_task(config_path: Path, manifest_path: Path, index: int, force: bool) -
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="rotation-patterns",
-        description="Reproduce the rotation-angle signature experiments.",
+        description="Run the rotation-angle signature thesis experiments.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -85,7 +85,7 @@ def build_parser() -> argparse.ArgumentParser:
     aggregate.add_argument("--config", type=Path, required=True)
     aggregate.add_argument("--experiment", choices=["classification", "segmentation", "hog"], required=True)
 
-    figures = subparsers.add_parser("figures", help="recreate Figures 1 through 4")
+    figures = subparsers.add_parser("figures", help="generate Figures 1 through 4")
     figures.add_argument("--config", type=Path, required=True)
     figures.add_argument(
         "--only",
@@ -94,7 +94,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     reference = subparsers.add_parser(
-        "fetch-reference", help="fetch and validate the authors' published curve CSVs"
+        "fetch-reference", help="fetch and validate my published curve CSVs"
     )
     reference.add_argument("--config", type=Path, required=True)
 

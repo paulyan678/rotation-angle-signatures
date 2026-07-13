@@ -152,8 +152,6 @@ def _torchvision_dataset(name: str, root: Path) -> Dataset | None:
         )
     if name == "eurosat":
         return tvd.EuroSAT(root, download=True)
-    if name == "caltech101":
-        return tvd.Caltech101(root, download=True)
     if name == "flowers102":
         return ConcatDataset(
             [tvd.Flowers102(root, split=split, download=True) for split in ("train", "val", "test")]
@@ -193,7 +191,14 @@ def build_image_dataset(
         dataset = BraTSSliceDataset(dataset_root, include_mask=False)
     else:
         grayscale = name in {"lung_mask", "chest_xray14"}
-        image_root = dataset_root / "images" if (dataset_root / "images").is_dir() else dataset_root
+        if name == "tiny_imagenet" and (dataset_root / "train").is_dir():
+            image_root = dataset_root / "train"
+        else:
+            image_root = (
+                dataset_root / "images"
+                if (dataset_root / "images").is_dir()
+                else dataset_root
+            )
         dataset = RecursiveImageDataset(image_root, grayscale=grayscale)
     return _limit_dataset(dataset, maximum, config.seed)
 

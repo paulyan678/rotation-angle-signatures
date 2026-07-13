@@ -42,9 +42,48 @@ def test_result_path_rejects_forged_manifest_id(tmp_path: Path) -> None:
         "angle": 0.0,
         "seed": 2025,
         "config_sha256": "a" * 64,
-        "protocol_version": "0.1.0",
+        "protocol_version": "0.2.0",
     }
     valid = {**payload, "job_id": stable_job_id(payload)}
     assert result_path(tmp_path, valid).name.endswith(".json")
     with pytest.raises(ValueError, match="job_id"):
         result_path(tmp_path, {**valid, "job_id": "../overwrite"})
+
+
+def test_aggregation_ignores_results_from_older_protocol(tmp_path: Path) -> None:
+    directory = tmp_path / "jobs" / "hog"
+    directory.mkdir(parents=True)
+    fingerprint = "b" * 64
+    base = {
+        "experiment": "hog",
+        "dataset": "synthetic_a",
+        "method": "hog_svm",
+        "encoder": "hog",
+        "angle": 0.0,
+        "seed": 2025,
+        "config_sha256": fingerprint,
+        "metric_name": "accuracy",
+        "metric_value": 0.5,
+    }
+    for protocol in ("0.1.0", "0.2.0"):
+        identity = {
+            key: value
+            for key, value in {**base, "protocol_version": protocol}.items()
+            if key
+            in {
+                "experiment",
+                "dataset",
+                "method",
+                "encoder",
+                "angle",
+                "seed",
+                "config_sha256",
+                "protocol_version",
+            }
+        }
+        job_id = stable_job_id(identity)
+        row = {**base, "protocol_version": protocol, "job_id": job_id}
+        (directory / f"{job_id}.json").write_text(json.dumps(row), encoding="utf-8")
+    frame = aggregate_results(tmp_path, "hog", config_sha256=fingerprint)
+    assert len(frame) == 1
+    assert frame.iloc[0]["protocol_version"] == "0.2.0"

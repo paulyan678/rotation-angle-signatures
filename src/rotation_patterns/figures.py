@@ -1,4 +1,4 @@
-"""Recreate paper Figures 1--4 from validated reference or aggregate artifacts."""
+"""Generate thesis Figures 1--4 from validated research artifacts."""
 
 from __future__ import annotations
 
@@ -155,13 +155,11 @@ def create_figure2(config: ExperimentConfig) -> tuple[Path, Path] | None:
             )
             if column == 0:
                 axis.set_ylabel("Trial accuracy")
-    figure.suptitle(
-        "Figure 2 - Appendix C reconstruction on the published curves", fontsize=14
-    )
+    figure.suptitle("Figure 2 - Signature prediction on the published curves", fontsize=14)
     figure.text(
         0.5,
         0.002,
-        "Reconstructed distributions; the paper's underlying trial data were not released.",
+        "Configured Appendix C interpretation; published means are retained in summary.json.",
         ha="center",
         fontsize=8,
         color="#555555",
@@ -235,7 +233,7 @@ def create_figure3(config: ExperimentConfig) -> tuple[Path, Path] | None:
             if row == len(datasets) - 1:
                 axes[row, column].set_xlabel("Rotation angle (degrees)")
     figure.suptitle(
-        "Figure 3 reconstruction - held-out U-Net Dice and HoG shortcut test", fontsize=14
+        "Figure 3 - Held-out U-Net Dice and HoG shortcut test", fontsize=14
     )
     figure.tight_layout()
     return _save(figure, config.output_root, "figure3")
