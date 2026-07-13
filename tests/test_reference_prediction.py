@@ -1,10 +1,14 @@
-import zipfile
-
 import numpy as np
 import pytest
 
+from rotation_patterns.config import ExperimentConfig, load_config
 from rotation_patterns.prediction import _feature_cube, _pairwise_similarities
-from rotation_patterns.reference import _archive_members, _read_curve
+from rotation_patterns.reference import (
+    _read_curve,
+    fetch_reference,
+    load_bundled_reference,
+    load_reference,
+)
 
 
 def test_reference_curve_parser_checks_paper_grid(tmp_path) -> None:
@@ -17,12 +21,21 @@ def test_reference_curve_parser_checks_paper_grid(tmp_path) -> None:
     assert np.all(accuracy == 0.75)
 
 
-def test_reference_archive_rejects_traversal(tmp_path) -> None:
-    archive_path = tmp_path / "bad.zip"
-    with zipfile.ZipFile(archive_path, "w") as archive:
-        archive.writestr("../raw_data/plot_1_1.csv", "bad")
-    with zipfile.ZipFile(archive_path) as archive, pytest.raises(ValueError, match="unsafe path"):
-        _archive_members(archive)
+def test_bundled_reference_is_complete_and_stages_without_network(tmp_path) -> None:
+    bundled = load_bundled_reference()
+    assert bundled.tensor.shape == (16, 16, 3600)
+    base = load_config("configs/smoke.yaml")
+    config = ExperimentConfig(base.path, {**base.raw, "output_root": str(tmp_path)})
+    destination = fetch_reference(config)
+    assert (destination / "figure1_curves.npz").is_file()
+    assert np.array_equal(load_reference(config).tensor, bundled.tensor)
+
+    with (destination / "figure1_curves.npz").open("ab") as artifact:
+        artifact.write(b"tampered")
+    with pytest.raises(ValueError, match="artifact checksum"):
+        load_reference(config)
+    fetch_reference(config)
+    assert np.array_equal(load_reference(config).tensor, bundled.tensor)
 
 
 def test_prediction_similarities_and_leave_one_out_features() -> None:
@@ -34,4 +47,3 @@ def test_prediction_similarities_and_leave_one_out_features() -> None:
     features = _feature_cube(similarities["cosine"], "row", (0, 1), 4)
     assert features.shape == (4, 2, 4)
     assert np.isfinite(features).all()
-

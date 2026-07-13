@@ -13,6 +13,7 @@ the classification task degenerate.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -315,7 +316,9 @@ def run_prediction_experiment(config: ExperimentConfig) -> tuple[Path, Path]:
         "protocol_version": PROTOCOL_VERSION,
         "config_sha256": config_digest(config.raw),
         "seed": config.seed,
-        "reference_commit": "bf9d88733752448c193b7b43356a7e083b021a7b",
+        "reference_tensor_sha256": hashlib.sha256(
+            reference.tensor.tobytes(order="C")
+        ).hexdigest(),
         "tensor_shape": list(reference.tensor.shape),
         "train_indices_zero_based": list(train_indices),
         "test_indices_zero_based": list(test_indices),

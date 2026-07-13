@@ -1,36 +1,26 @@
-"""Fetch and validate my published Figure 1 measurement archive.
-
-I download the curve CSVs from an immutable commit of ``paulyan678/thesis`` and keep the
-published measurements separate from new experiment aggregates.
-"""
+"""Load and stage the Figure 1 measurements bundled with this project."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
+from importlib import resources
 import json
 import os
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 import re
 import shutil
 import tempfile
 from typing import Any
-from urllib.request import Request, urlopen
-import zipfile
 
 import numpy as np
 
-from . import __version__
 from .config import ExperimentConfig
 
 
-REFERENCE_COMMIT = "bf9d88733752448c193b7b43356a7e083b021a7b"
-REFERENCE_URL = (
-    f"https://codeload.github.com/paulyan678/thesis/zip/{REFERENCE_COMMIT}"
-)
 EXPECTED_SHAPE = (16, 16, 3600)
-MAX_ARCHIVE_BYTES = 128 * 1024 * 1024
-MAX_MEMBER_BYTES = 1024 * 1024
-MAX_REFERENCE_BYTES = 64 * 1024 * 1024
+BUNDLED_ARTIFACT = "figure1_curves.npz"
+BUNDLED_METADATA = "metadata.json"
 
 DATASET_NAMES = (
     "CIFAR-10",
@@ -70,9 +60,6 @@ ENCODER_METHOD_NAMES = (
     "SimCLR Swin-Tiny",
 )
 
-_MEMBER_PATTERN = re.compile(
-    r"^[^/]+/raw_data/plot_([1-9]|1[0-6])_([1-9]|1[0-6])\.csv$"
-)
 _FILE_PATTERN = re.compile(r"^plot_([1-9]|1[0-6])_([1-9]|1[0-6])\.csv$")
 
 
@@ -102,64 +89,91 @@ def reference_mapping() -> dict[str, Any]:
     }
 
 
-def _raw_data_directory(source: ExperimentConfig | str | Path) -> Path:
-    if isinstance(source, ExperimentConfig):
-        root = source.output_root / "reference"
-    else:
-        root = Path(source)
-    return root if root.name == "raw_data" else root / "raw_data"
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _expected_angles() -> np.ndarray:
+    return np.arange(EXPECTED_SHAPE[2], dtype=np.float64) / 10.0
+
+
+def _validate_reference(
+    angles: np.ndarray,
+    tensor: np.ndarray,
+    datasets: tuple[str, ...] = DATASET_NAMES,
+    encoder_methods: tuple[str, ...] = ENCODER_METHOD_NAMES,
+) -> ReferenceCurves:
+    angles = np.asarray(angles, dtype=np.float64)
+    tensor = np.asarray(tensor, dtype=np.float64)
+    if angles.shape != (EXPECTED_SHAPE[2],):
+        raise ValueError(f"angle grid has shape {angles.shape}; expected (3600,)")
+    if not np.allclose(angles, _expected_angles(), rtol=0.0, atol=1e-10):
+        raise ValueError("angle grid is not the published 0.0..359.9 grid")
+    if tensor.shape != EXPECTED_SHAPE:
+        raise ValueError(f"curve tensor has shape {tensor.shape}; expected {EXPECTED_SHAPE}")
+    if not np.isfinite(tensor).all() or np.any((tensor < 0.0) | (tensor > 1.0)):
+        raise ValueError("curve tensor contains non-finite accuracy or a value outside [0, 1]")
+    if datasets != DATASET_NAMES or encoder_methods != ENCODER_METHOD_NAMES:
+        raise ValueError("bundled curve-axis labels do not match the published experiment")
+    return ReferenceCurves(angles, tensor, datasets, encoder_methods)
 
 
 def _read_curve(path: Path) -> tuple[np.ndarray, np.ndarray]:
+    """Read one legacy two-column curve CSV for researcher-supplied imports."""
+
     try:
         values = np.loadtxt(path, delimiter=",", skiprows=1, dtype=np.float64)
     except (OSError, ValueError) as exc:
         raise ValueError(f"could not parse reference curve {path}: {exc}") from exc
     if values.shape != (EXPECTED_SHAPE[2], 2):
-        raise ValueError(
-            f"reference curve {path} has shape {values.shape}; expected (3600, 2)"
-        )
+        raise ValueError(f"reference curve {path} has shape {values.shape}; expected (3600, 2)")
     angles, accuracy = values[:, 0], values[:, 1]
-    expected_angles = np.arange(EXPECTED_SHAPE[2], dtype=np.float64) / 10.0
-    if not np.allclose(angles, expected_angles, rtol=0.0, atol=1e-10):
+    if not np.allclose(angles, _expected_angles(), rtol=0.0, atol=1e-10):
         raise ValueError(f"reference curve {path} does not use the 0.0..359.9 grid")
-    if not np.isfinite(accuracy).all():
-        raise ValueError(f"reference curve {path} contains non-finite accuracies")
-    if np.any((accuracy < 0.0) | (accuracy > 1.0)):
-        raise ValueError(f"reference curve {path} contains accuracy outside [0, 1]")
+    if not np.isfinite(accuracy).all() or np.any((accuracy < 0.0) | (accuracy > 1.0)):
+        raise ValueError(f"reference curve {path} contains invalid accuracy values")
     return angles, accuracy
 
 
-def load_reference(source: ExperimentConfig | str | Path) -> ReferenceCurves:
-    """Load the complete published tensor and fail on missing or extra curve CSVs."""
+def _load_npz(path: Path) -> ReferenceCurves:
+    try:
+        with np.load(path, allow_pickle=False) as data:
+            required = {"angles", "tensor", "datasets", "encoder_methods"}
+            if not required <= set(data.files):
+                raise ValueError(f"bundled artifact is missing arrays: {sorted(required-set(data.files))}")
+            angles = np.asarray(data["angles"], dtype=np.float64)
+            tensor = np.asarray(data["tensor"], dtype=np.float64)
+            datasets = tuple(str(value) for value in data["datasets"].tolist())
+            encoder_methods = tuple(str(value) for value in data["encoder_methods"].tolist())
+    except (OSError, ValueError) as exc:
+        raise ValueError(f"could not load curve artifact {path}: {exc}") from exc
+    return _validate_reference(angles, tensor, datasets, encoder_methods)
 
-    raw_data = _raw_data_directory(source)
-    if not raw_data.is_dir():
-        raise FileNotFoundError(
-            f"reference data not found at {raw_data}; run `rotation-patterns "
-            "fetch-reference --config ...` first"
-        )
-    csv_paths = sorted(raw_data.glob("*.csv"))
+
+def _load_csv_directory(raw_data: Path) -> ReferenceCurves:
     expected_names = {
         f"plot_{row}_{column}.csv"
         for row in range(1, EXPECTED_SHAPE[0] + 1)
         for column in range(1, EXPECTED_SHAPE[1] + 1)
     }
-    actual_names = {path.name for path in csv_paths}
+    actual_names = {path.name for path in raw_data.glob("*.csv")}
     if actual_names != expected_names:
         missing = sorted(expected_names - actual_names)
         extra = sorted(actual_names - expected_names)
         raise ValueError(
-            "reference directory must contain exactly 256 curve CSVs; "
+            "curve directory must contain exactly 256 CSVs; "
             f"missing={missing[:5]}, extra={extra[:5]}"
         )
-
     tensor = np.empty(EXPECTED_SHAPE, dtype=np.float64)
     common_angles: np.ndarray | None = None
-    for path in csv_paths:
+    for path in sorted(raw_data.glob("*.csv")):
         match = _FILE_PATTERN.fullmatch(path.name)
-        if match is None:  # Protected by the exact-name test above.
-            raise ValueError(f"unexpected reference filename: {path.name}")
+        if match is None:
+            raise ValueError(f"unexpected curve filename: {path.name}")
         row, column = (int(value) - 1 for value in match.groups())
         angles, accuracy = _read_curve(path)
         if common_angles is None:
@@ -167,114 +181,116 @@ def load_reference(source: ExperimentConfig | str | Path) -> ReferenceCurves:
         elif not np.array_equal(angles, common_angles):
             raise ValueError(f"angle grid differs in {path}")
         tensor[row, column] = accuracy
+    if common_angles is None:
+        raise ValueError(f"no curve CSVs found under {raw_data}")
+    return _validate_reference(common_angles, tensor)
 
-    if tensor.shape != EXPECTED_SHAPE or common_angles is None:
-        raise AssertionError("reference tensor construction failed")
-    return ReferenceCurves(common_angles, tensor)
+
+def _reference_root(source: ExperimentConfig | str | Path) -> Path:
+    if isinstance(source, ExperimentConfig):
+        return source.output_root / "reference"
+    return Path(source)
+
+
+def load_reference(source: ExperimentConfig | str | Path) -> ReferenceCurves:
+    """Load the staged NPZ artifact or an exact 256-CSV researcher export."""
+
+    root = _reference_root(source)
+    if root.is_file() and root.suffix == ".npz":
+        metadata_path = root.parent / BUNDLED_METADATA
+        if metadata_path.is_file():
+            metadata = _metadata(metadata_path)
+            if metadata.get("artifact") == root.name:
+                return _load_checked_artifact(root, metadata)
+        return _load_npz(root)
+    artifact = root / BUNDLED_ARTIFACT
+    if artifact.is_file():
+        metadata_path = root / BUNDLED_METADATA
+        if not metadata_path.is_file():
+            raise FileNotFoundError(f"checksum metadata not found at {metadata_path}")
+        return _load_checked_artifact(artifact, _metadata(metadata_path))
+    raw_data = root if root.name == "raw_data" else root / "raw_data"
+    if raw_data.is_dir():
+        return _load_csv_directory(raw_data)
+    raise FileNotFoundError(
+        f"curve measurements not found at {root}; run "
+        "`rotation-patterns fetch-reference --config ...` first"
+    )
 
 
 def load_reference_tensor(source: ExperimentConfig | str | Path) -> np.ndarray:
-    """Convenience API returning only the validated ``16 x 16 x 3600`` tensor."""
+    """Return only the validated ``16 x 16 x 3600`` accuracy tensor."""
 
     return load_reference(source).tensor
 
 
-def _archive_members(archive: zipfile.ZipFile) -> dict[str, zipfile.ZipInfo]:
-    selected: dict[str, zipfile.ZipInfo] = {}
-    total_size = 0
-    for info in archive.infolist():
-        # Reject dangerous paths before considering a member for extraction.
-        path = PurePosixPath(info.filename)
-        if path.is_absolute() or ".." in path.parts:
-            raise ValueError(f"unsafe path in reference archive: {info.filename!r}")
-        match = _MEMBER_PATTERN.fullmatch(info.filename)
-        if match is None:
-            continue
-        if info.is_dir() or info.external_attr >> 16 & 0o170000 == 0o120000:
-            raise ValueError(f"reference CSV is not a regular file: {info.filename!r}")
-        if info.flag_bits & 0x1:
-            raise ValueError(f"encrypted reference member is not allowed: {info.filename!r}")
-        if info.file_size > MAX_MEMBER_BYTES or info.compress_size > MAX_MEMBER_BYTES:
-            raise ValueError(f"reference member exceeds the size limit: {info.filename!r}")
-        total_size += info.file_size
-        if total_size > MAX_REFERENCE_BYTES:
-            raise ValueError("reference CSVs exceed the total uncompressed size limit")
-        filename = f"plot_{int(match.group(1))}_{int(match.group(2))}.csv"
-        if filename in selected:
-            raise ValueError(f"duplicate reference member for {filename}")
-        selected[filename] = info
-    if len(selected) != EXPECTED_SHAPE[0] * EXPECTED_SHAPE[1]:
-        raise ValueError(
-            f"pinned archive contains {len(selected)} reference CSVs; expected 256"
-        )
-    return selected
+def _bundled_file(name: str):
+    return resources.files("rotation_patterns.reference_data").joinpath(name)
+
+
+def _metadata(path: Path) -> dict[str, Any]:
+    with path.open(encoding="utf-8") as handle:
+        value = json.load(handle)
+    if not isinstance(value, dict):
+        raise ValueError(f"artifact metadata must be a JSON object: {path}")
+    return value
+
+
+def bundled_reference_metadata() -> dict[str, Any]:
+    """Return a copy of the checksum metadata shipped with the measurements."""
+
+    with resources.as_file(_bundled_file(BUNDLED_METADATA)) as metadata_path:
+        return dict(_metadata(Path(metadata_path)))
+
+
+def _load_checked_artifact(artifact: Path, metadata: dict[str, Any]) -> ReferenceCurves:
+    if metadata.get("artifact") != artifact.name:
+        raise ValueError("Figure 1 artifact name does not match metadata")
+    if _sha256(artifact) != metadata.get("artifact_sha256"):
+        raise ValueError("Figure 1 artifact checksum does not match metadata")
+    curves = _load_npz(artifact)
+    tensor_sha256 = hashlib.sha256(curves.tensor.tobytes(order="C")).hexdigest()
+    if tensor_sha256 != metadata.get("tensor_sha256"):
+        raise ValueError("Figure 1 tensor checksum does not match metadata")
+    return curves
+
+
+def load_bundled_reference() -> ReferenceCurves:
+    """Load the lossless original measurements included in the Python package."""
+
+    with resources.as_file(_bundled_file(BUNDLED_ARTIFACT)) as artifact_path:
+        artifact = Path(artifact_path)
+        metadata = bundled_reference_metadata()
+        return _load_checked_artifact(artifact, metadata)
 
 
 def fetch_reference(config: ExperimentConfig) -> Path:
-    """Fetch only the 256 published CSVs, install atomically, and validate them."""
+    """Stage the bundled measurements under the configured output directory."""
 
+    # Validate the package artifact before reading or copying any existing staged data.
+    load_bundled_reference()
     destination = config.output_root / "reference"
-    try:
-        load_reference(destination)
-        with (destination / "metadata.json").open(encoding="utf-8") as handle:
-            installed_metadata = json.load(handle)
-        if installed_metadata.get("commit") == REFERENCE_COMMIT:
-            return destination
-    except (FileNotFoundError, json.JSONDecodeError, OSError, ValueError, AttributeError):
-        pass
+    if (destination / BUNDLED_ARTIFACT).is_file() and (destination / BUNDLED_METADATA).is_file():
+        try:
+            staged_metadata = _metadata(destination / BUNDLED_METADATA)
+            with resources.as_file(_bundled_file(BUNDLED_METADATA)) as metadata_path:
+                bundled_metadata = _metadata(Path(metadata_path))
+            if staged_metadata == bundled_metadata:
+                _load_checked_artifact(destination / BUNDLED_ARTIFACT, staged_metadata)
+                return destination
+        except (OSError, ValueError, json.JSONDecodeError):
+            pass
 
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="reference-", dir=destination.parent) as temp_name:
         temporary = Path(temp_name)
-        archive_path = temporary / "reference.zip"
-        request = Request(
-            REFERENCE_URL, headers={"User-Agent": f"rotation-patterns/{__version__}"}
-        )
-        try:
-            with urlopen(request, timeout=120) as response, archive_path.open("wb") as output:
-                content_length = response.headers.get("Content-Length")
-                if content_length is not None and int(content_length) > MAX_ARCHIVE_BYTES:
-                    raise ValueError("reference archive exceeds the download size limit")
-                copied = 0
-                while True:
-                    chunk = response.read(1024 * 1024)
-                    if not chunk:
-                        break
-                    copied += len(chunk)
-                    if copied > MAX_ARCHIVE_BYTES:
-                        raise ValueError("reference archive exceeds the download size limit")
-                    output.write(chunk)
-        except OSError as exc:
-            raise RuntimeError(f"failed to fetch reference archive from {REFERENCE_URL}") from exc
-
         staged = temporary / "staged"
-        raw_data = staged / "raw_data"
-        raw_data.mkdir(parents=True)
-        try:
-            with zipfile.ZipFile(archive_path) as archive:
-                members = _archive_members(archive)
-                for filename, info in sorted(members.items()):
-                    target = raw_data / filename
-                    with archive.open(info) as source, target.open("wb") as output:
-                        shutil.copyfileobj(source, output)
-        except (OSError, zipfile.BadZipFile) as exc:
-            raise ValueError("downloaded reference archive is not a valid ZIP file") from exc
-
+        staged.mkdir()
+        for name in (BUNDLED_ARTIFACT, BUNDLED_METADATA):
+            with resources.as_file(_bundled_file(name)) as source_path:
+                shutil.copy2(source_path, staged / name)
         load_reference(staged)
-        metadata = {
-            "source": "https://github.com/paulyan678/thesis",
-            "commit": REFERENCE_COMMIT,
-            "archive_url": REFERENCE_URL,
-            "csv_count": 256,
-            "tensor_shape": list(EXPECTED_SHAPE),
-            "mapping": reference_mapping(),
-        }
-        with (staged / "metadata.json").open("w", encoding="utf-8") as handle:
-            json.dump(metadata, handle, indent=2, sort_keys=True)
-            handle.write("\n")
 
-        # The directory is owned by this command.  os.replace keeps valid prior data
-        # untouched until the newly staged reference has passed every validation.
         backup = temporary / "previous"
         if destination.exists():
             os.replace(destination, backup)
@@ -284,6 +300,4 @@ def fetch_reference(config: ExperimentConfig) -> Path:
             if backup.exists() and not destination.exists():
                 os.replace(backup, destination)
             raise
-
-    load_reference(destination)
     return destination

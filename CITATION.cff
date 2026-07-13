@@ -7,7 +7,7 @@ authors:
     given-names: Paul
 repository-code: "https://github.com/paulyan678/rotation-angle-signatures"
 license: MIT
-version: 0.2.0
+version: 0.3.0
 date-released: 2026-07-13
 preferred-citation:
   type: conference-paper
