@@ -1,9 +1,12 @@
 import torch
+from PIL import Image
 
-from rotation_patterns.config import load_config
+from rotation_patterns.config import ExperimentConfig, load_config
 from rotation_patterns.data import (
     FixedRotationPairDataset,
     SyntheticRotationDataset,
+    _torchvision_dataset,
+    build_image_dataset,
     build_segmentation_dataset,
     fixed_split_indices,
     prepare_view,
@@ -41,3 +44,19 @@ def test_synthetic_segmentation_fixture() -> None:
     assert mask.shape == (1, 32, 32)
     assert set(torch.unique(mask).tolist()) <= {0.0, 1.0}
 
+
+def test_tiny_imagenet_uses_only_official_training_directory(tmp_path) -> None:
+    root = tmp_path / "tiny_imagenet"
+    for split in ("train", "val"):
+        directory = root / split / "class_a"
+        directory.mkdir(parents=True)
+        Image.new("RGB", (8, 8), color="white").save(directory / f"{split}.png")
+    base = load_config("configs/smoke.yaml")
+    raw = {**base.raw, "data_root": str(tmp_path)}
+    config = ExperimentConfig(base.path, raw)
+    dataset = build_image_dataset(config, "tiny_imagenet")
+    assert len(dataset) == 1
+
+
+def test_caltech101_uses_full_manual_image_folder(tmp_path) -> None:
+    assert _torchvision_dataset("caltech101", tmp_path) is None

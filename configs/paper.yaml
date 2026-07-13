@@ -1,6 +1,6 @@
 profile: paper
 seed: 2025
-data_revision: paper-datasets-unversioned-v1
+data_revision: neurreps-2025-datasets-v1
 deterministic: true
 device: auto
 data_root: data
