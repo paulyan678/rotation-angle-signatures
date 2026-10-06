@@ -1,0 +1,141 @@
+classification:
+  angles:
+    inclusive: true
+    start: 0.0
+    step: 0.1
+    stop: 359.9
+  image_size: 224
+  pretrain:
+    batch_size: 64
+    epochs: 200
+    imagenet_initialized: true
+    learning_rate: 0.03
+    moco_momentum: 0.999
+    momentum: 0.9
+    projection_dim: 128
+    projection_hidden_dim: 2048
+    queue_size: 65536
+    temperature: 0.2
+    weight_decay: 0.0001
+  probe:
+    batch_size: 64
+    epochs: 20
+    hidden_dims:
+    - 1024
+    - 512
+    - 256
+    - 128
+    - 64
+    learning_rate: 0.015
+    momentum: 0.9
+    split: 0.8
+    weight_decay: 0.0
+data_revision: neurreps-2025-datasets-v1
+data_root: data
+datasets:
+- cifar10
+- mnist
+- fashion_mnist
+- tiny_imagenet
+- brats
+- lung_mask
+- kvasir_seg
+- stanford_dogs
+- inaturalist
+- plant_village
+- chest_xray14
+- svhn
+- eurosat
+- caltech101
+- flowers102
+- food101
+deterministic: true
+device: auto
+encoders:
+- resnet18
+- convnext_tiny
+- vit_base_patch16_224
+- efficientnet_b0
+- regnety_004
+- wide_resnet50_2
+- mobilenetv2_100
+- swin_tiny_patch4_window7_224
+hog:
+  angles:
+    inclusive: true
+    start: 0
+    step: 1
+    stop: 360
+  c_grid:
+  - 0.1
+  - 1.0
+  - 10.0
+  cells_per_block:
+  - 1
+  - 1
+  cv_folds: 5
+  datasets:
+  - brats
+  - kvasir_seg
+  - lung_mask
+  gamma_grid:
+  - scale
+  - auto
+  image_size: 256
+  orientations: 9
+  pixels_per_cell:
+  - 64
+  - 64
+  test_fraction: 0.2
+methods:
+- mocov2
+- simclr
+num_workers: 8
+output_root: outputs/current-analysis
+prediction:
+  epochs: 200
+  evaluation_repetitions: 100
+  learning_rate: 0.01
+  metrics:
+  - cosine
+  - l2
+  sample_size: 20
+  train_size: 10
+  trials: 100
+profile: paper
+seed: 2025
+segmentation:
+  angles:
+    inclusive: true
+    start: 0
+    step: 1
+    stop: 360
+  datasets:
+  - brats
+  - kvasir_seg
+  - lung_mask
+  encoders:
+  - convnext_tiny
+  - vit_base_patch16_224
+  - resnet50
+  image_size: 224
+  pretrain:
+    batch_size: 32
+    epochs: 200
+    imagenet_initialized: true
+    learning_rate: 0.03
+    moco_momentum: 0.999
+    momentum: 0.9
+    projection_dim: 128
+    projection_hidden_dim: 2048
+    queue_size: 65536
+    temperature: 0.2
+    weight_decay: 0.0001
+  supervised:
+    batch_size: 16
+    early_stopping_patience: 10
+    epochs: 100
+    learning_rate: 0.0001
+    test_fraction: 0.2
+    validation_fraction: 0.1
+    weight_decay: 1.0e-05

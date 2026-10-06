@@ -1,0 +1,720 @@
+{
+  "appendix_c_method_note": "Appendix C does not specify the underlying violin repetitions or release their trial data. I retain the printed Figure 2 means below and report my explicit shared-weight interpretation alongside them.",
+  "config_sha256": "c1224a9096086de63aaa40ab44b21e081d2b369832791f4c52f482f568c41a78",
+  "draws_per_evaluation_repetition": 100,
+  "epochs": 200,
+  "evaluation_repetitions_per_class": 100,
+  "l2_assumption": "L2 is negative Euclidean distance because Equation (6) uses argmax; larger values must mean greater similarity.",
+  "learning_rate": 0.01,
+  "loss": {
+    "column": {
+      "cosine": {
+        "final": 2.772592743801711,
+        "initial": 2.772586041159009
+      },
+      "l2": {
+        "final": 1.894605320933461,
+        "initial": 2.2460489522832354
+      }
+    },
+    "row": {
+      "cosine": {
+        "final": 2.7726222307162836,
+        "initial": 2.772627501576192
+      },
+      "l2": {
+        "final": 2.770929414254352,
+        "initial": 2.8699049997642065
+      }
+    }
+  },
+  "overall_accuracy": [
+    {
+      "accuracy": 0.0516375,
+      "axis": "column",
+      "metric": "cosine"
+    },
+    {
+      "accuracy": 0.2911375,
+      "axis": "column",
+      "metric": "l2"
+    },
+    {
+      "accuracy": 0.13546875,
+      "axis": "row",
+      "metric": "cosine"
+    },
+    {
+      "accuracy": 0.11428750000000001,
+      "axis": "row",
+      "metric": "l2"
+    }
+  ],
+  "per_class_accuracy": [
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 0,
+      "target_name": "MoCo ResNet-18"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 1,
+      "target_name": "MoCo ConvNeXt-Tiny"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 2,
+      "target_name": "MoCo ViT-B/16"
+    },
+    {
+      "accuracy": 0.166,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 3,
+      "target_name": "MoCo EfficientNet-B0"
+    },
+    {
+      "accuracy": 0.16510000000000002,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 4,
+      "target_name": "MoCo RegNetY-400MF"
+    },
+    {
+      "accuracy": 0.33020000000000005,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 5,
+      "target_name": "MoCo WideResNet-50-2"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 6,
+      "target_name": "MoCo MobileNetV2"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 7,
+      "target_name": "MoCo Swin-Tiny"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 8,
+      "target_name": "SimCLR ResNet-18"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 9,
+      "target_name": "SimCLR ConvNeXt-Tiny"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 10,
+      "target_name": "SimCLR ViT-B/16"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 11,
+      "target_name": "SimCLR EfficientNet-B0"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 12,
+      "target_name": "SimCLR RegNetY-400MF"
+    },
+    {
+      "accuracy": 0.1649,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 13,
+      "target_name": "SimCLR WideResNet-50-2"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 14,
+      "target_name": "SimCLR MobileNetV2"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "cosine",
+      "target_index": 15,
+      "target_name": "SimCLR Swin-Tiny"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 0,
+      "target_name": "MoCo ResNet-18"
+    },
+    {
+      "accuracy": 0.6677,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 1,
+      "target_name": "MoCo ConvNeXt-Tiny"
+    },
+    {
+      "accuracy": 0.6591,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 2,
+      "target_name": "MoCo ViT-B/16"
+    },
+    {
+      "accuracy": 0.66,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 3,
+      "target_name": "MoCo EfficientNet-B0"
+    },
+    {
+      "accuracy": 0.3262,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 4,
+      "target_name": "MoCo RegNetY-400MF"
+    },
+    {
+      "accuracy": 0.3323,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 5,
+      "target_name": "MoCo WideResNet-50-2"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 6,
+      "target_name": "MoCo MobileNetV2"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 7,
+      "target_name": "MoCo Swin-Tiny"
+    },
+    {
+      "accuracy": 0.1697,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 8,
+      "target_name": "SimCLR ResNet-18"
+    },
+    {
+      "accuracy": 0.3428,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 9,
+      "target_name": "SimCLR ConvNeXt-Tiny"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 10,
+      "target_name": "SimCLR ViT-B/16"
+    },
+    {
+      "accuracy": 0.1684,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 11,
+      "target_name": "SimCLR EfficientNet-B0"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 12,
+      "target_name": "SimCLR RegNetY-400MF"
+    },
+    {
+      "accuracy": 0.332,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 13,
+      "target_name": "SimCLR WideResNet-50-2"
+    },
+    {
+      "accuracy": 1.0,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 14,
+      "target_name": "SimCLR MobileNetV2"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "column",
+      "metric": "l2",
+      "target_index": 15,
+      "target_name": "SimCLR Swin-Tiny"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 0,
+      "target_name": "CIFAR-10"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 1,
+      "target_name": "MNIST"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 2,
+      "target_name": "Fashion-MNIST"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 3,
+      "target_name": "Tiny ImageNet"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 4,
+      "target_name": "BraTS"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 5,
+      "target_name": "Lung Mask Image Dataset"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 6,
+      "target_name": "Kvasir-SEG"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 7,
+      "target_name": "Stanford Dogs"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 8,
+      "target_name": "iNaturalist"
+    },
+    {
+      "accuracy": 1.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 9,
+      "target_name": "PlantVillage"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 10,
+      "target_name": "ChestX-ray14"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 11,
+      "target_name": "Street View House Numbers"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 12,
+      "target_name": "EuroSAT"
+    },
+    {
+      "accuracy": 0.3342,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 13,
+      "target_name": "Caltech-101"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 14,
+      "target_name": "Flowers-102"
+    },
+    {
+      "accuracy": 0.8332999999999999,
+      "axis": "row",
+      "metric": "cosine",
+      "target_index": 15,
+      "target_name": "Food-101"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 0,
+      "target_name": "CIFAR-10"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 1,
+      "target_name": "MNIST"
+    },
+    {
+      "accuracy": 0.49479999999999996,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 2,
+      "target_name": "Fashion-MNIST"
+    },
+    {
+      "accuracy": 0.1654,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 3,
+      "target_name": "Tiny ImageNet"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 4,
+      "target_name": "BraTS"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 5,
+      "target_name": "Lung Mask Image Dataset"
+    },
+    {
+      "accuracy": 0.6686,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 6,
+      "target_name": "Kvasir-SEG"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 7,
+      "target_name": "Stanford Dogs"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 8,
+      "target_name": "iNaturalist"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 9,
+      "target_name": "PlantVillage"
+    },
+    {
+      "accuracy": 0.3392,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 10,
+      "target_name": "ChestX-ray14"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 11,
+      "target_name": "Street View House Numbers"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 12,
+      "target_name": "EuroSAT"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 13,
+      "target_name": "Caltech-101"
+    },
+    {
+      "accuracy": 0.0,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 14,
+      "target_name": "Flowers-102"
+    },
+    {
+      "accuracy": 0.1606,
+      "axis": "row",
+      "metric": "l2",
+      "target_index": 15,
+      "target_name": "Food-101"
+    }
+  ],
+  "protocol": "Appendix C held-out-axis weighted similarity classifier",
+  "protocol_version": "0.3.0",
+  "published_comparison": [
+    {
+      "axis": "row",
+      "mean_absolute_class_difference": 0.51744375,
+      "metric": "cosine",
+      "published_macro_mean": 0.56375,
+      "reconstructed_macro_mean": 0.13546875
+    },
+    {
+      "axis": "row",
+      "mean_absolute_class_difference": 0.4950875,
+      "metric": "l2",
+      "published_macro_mean": 0.609375,
+      "reconstructed_macro_mean": 0.11428749999999999
+    },
+    {
+      "axis": "column",
+      "mean_absolute_class_difference": 0.5883625,
+      "metric": "cosine",
+      "published_macro_mean": 0.64,
+      "reconstructed_macro_mean": 0.05163750000000001
+    },
+    {
+      "axis": "column",
+      "mean_absolute_class_difference": 0.424825,
+      "metric": "l2",
+      "published_macro_mean": 0.6012500000000001,
+      "reconstructed_macro_mean": 0.2911375
+    }
+  ],
+  "published_figure2_red_means": {
+    "column": {
+      "cosine": [
+        0.59,
+        0.62,
+        0.66,
+        0.66,
+        0.73,
+        0.78,
+        0.49,
+        0.65,
+        0.55,
+        0.72,
+        0.54,
+        0.79,
+        0.69,
+        0.48,
+        0.68,
+        0.61
+      ],
+      "l2": [
+        0.75,
+        0.43,
+        0.66,
+        0.45,
+        0.67,
+        0.7,
+        0.53,
+        0.77,
+        0.74,
+        0.65,
+        0.51,
+        0.67,
+        0.47,
+        0.46,
+        0.53,
+        0.63
+      ]
+    },
+    "row": {
+      "cosine": [
+        0.62,
+        0.51,
+        0.66,
+        0.65,
+        0.44,
+        0.51,
+        0.59,
+        0.57,
+        0.52,
+        0.53,
+        0.65,
+        0.57,
+        0.51,
+        0.53,
+        0.57,
+        0.59
+      ],
+      "l2": [
+        0.8,
+        0.77,
+        0.7,
+        0.34,
+        0.5,
+        0.68,
+        0.69,
+        0.5,
+        0.49,
+        0.54,
+        0.48,
+        0.82,
+        0.47,
+        0.59,
+        0.75,
+        0.63
+      ]
+    }
+  },
+  "reference_tensor_sha256": "76fedf1d7768a177013287d86c1ab6f8f9da4516768876f12741f2bfa5b3a931",
+  "sample_size": 20,
+  "seed": 2025,
+  "tensor_shape": [
+    16,
+    16,
+    3600
+  ],
+  "test_indices_zero_based": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "train_indices_zero_based": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "weight_interpretation": "One shared class-weight vector is fit on balanced examples from all classes. Equation (6) denotes its i-th component a_i; target-specific vectors would condition on and leak the label being predicted.",
+  "weights": {
+    "column": {
+      "cosine": [
+        1.0010870622685284,
+        1.0007979216465737,
+        1.000855952759529,
+        1.0008715654230271,
+        1.0009586332360256,
+        1.000888669518009,
+        1.0007179524090524,
+        1.0008526715769681,
+        1.000963778045113,
+        1.0010628163314879,
+        1.0008524385756938,
+        1.000764214088023,
+        1.0008708574760676,
+        1.0007585884520571,
+        1.0008171424199837,
+        1.0009229762621297
+      ],
+      "l2": [
+        2.389447018532786,
+        2.4248844997523364,
+        2.1915546882056645,
+        2.431864626896814,
+        2.470429145316799,
+        2.5458951590918386,
+        2.4229997356078,
+        2.4786486234731613,
+        2.4659067076324717,
+        2.423338262581133,
+        2.5540003024410955,
+        2.4301378232030135,
+        2.52339134705268,
+        2.5192001479814072,
+        2.1061427840675027,
+        2.5066507924746286
+      ]
+    },
+    "row": {
+      "cosine": [
+        0.9730970394418648,
+        0.9734475332597095,
+        0.9730869859948761,
+        0.9728897405891282,
+        0.9733951336135327,
+        0.9734145502943555,
+        0.9733698573955027,
+        0.9736611624895156,
+        0.9734393332731551,
+        0.9736940864827316,
+        0.9732912645263896,
+        0.97350065245886,
+        0.9732516093587699,
+        0.9738873262321327,
+        0.9734594729937757,
+        0.9736858374650084
+      ],
+      "l2": [
+        -0.017630849685234335,
+        -0.03018772231950456,
+        -0.04594930973435357,
+        -0.04411394549161166,
+        -0.033624755642084135,
+        -0.04218459649333408,
+        -0.04714261330333975,
+        -0.04292550999556621,
+        -0.0323180629929069,
+        -0.014900343234474181,
+        -0.046930284682980335,
+        -0.03321937621726385,
+        -0.01803934335101391,
+        -0.03941975301700669,
+        -0.033430776428936854,
+        -0.04437260488032039
+      ]
+    }
+  }
+}
