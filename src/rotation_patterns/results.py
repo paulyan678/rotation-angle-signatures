@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
 
 from .reproducibility import PROTOCOL_VERSION, stable_job_id
-
 
 REQUIRED_RESULT_KEYS = {
     "job_id",

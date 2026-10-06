@@ -1,0 +1,126 @@
+{
+  "artifacts": {
+    "prediction/summary.json": "56a326c0a54934e6de2d54b3f6ca07184200fc4bf8d3f0278bd530dd5e9bdaaf",
+    "prediction/trials.csv": "d35c609840bbbbc9643f8fdebe58935a8ceacdf44d048f8f404bf439e13c3f1f",
+    "resolved_config.yaml": "97984056104ab2cf745e8fb220aaf7307f21e518407b8f67048024bcd5b31eb9"
+  },
+  "boundary": "No source-image training, original classifier recovery, or Figure 3 replication.",
+  "comparison": [
+    {
+      "axis": "row",
+      "mean_absolute_class_difference": 0.51744375,
+      "metric": "cosine",
+      "published_macro_mean": 0.56375,
+      "reconstructed_macro_mean": 0.13546875
+    },
+    {
+      "axis": "row",
+      "mean_absolute_class_difference": 0.4950875,
+      "metric": "l2",
+      "published_macro_mean": 0.609375,
+      "reconstructed_macro_mean": 0.11428749999999999
+    },
+    {
+      "axis": "column",
+      "mean_absolute_class_difference": 0.5883625,
+      "metric": "cosine",
+      "published_macro_mean": 0.64,
+      "reconstructed_macro_mean": 0.05163750000000001
+    },
+    {
+      "axis": "column",
+      "mean_absolute_class_difference": 0.424825,
+      "metric": "l2",
+      "published_macro_mean": 0.6012500000000001,
+      "reconstructed_macro_mean": 0.2911375
+    }
+  ],
+  "config_sha256": "c1224a9096086de63aaa40ab44b21e081d2b369832791f4c52f482f568c41a78",
+  "environment": {
+    "packages": {
+      "Pillow": "12.3.0",
+      "PyYAML": "6.0.3",
+      "numpy": "2.3.5",
+      "pandas": "2.2.3",
+      "pytest": "8.4.2",
+      "ruff": "0.16.10",
+      "scikit-image": "0.26.0",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "timm": "1.0.30",
+      "torch": "2.14.1",
+      "torchvision": "0.29.1"
+    },
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "python": "3.12.14"
+  },
+  "git_commit": "38aa53663fb22ae622503561fd59f3549845c708",
+  "git_dirty": false,
+  "kind": "current-explicit-interpretation-not-original-paper-reproduction",
+  "reference": {
+    "angle_start": 0.0,
+    "angle_step": 0.1,
+    "angle_stop": 359.9,
+    "artifact": "figure1_curves.npz",
+    "artifact_sha256": "3d1ff1719a8eb7be1e227099edf73211a7c227bf1087238909264b071144881a",
+    "description": "Original Figure 1 rotation-angle accuracy measurements",
+    "dtype": "float64",
+    "measurement_count": 921600,
+    "tensor_sha256": "76fedf1d7768a177013287d86c1ab6f8f9da4516768876f12741f2bfa5b3a931",
+    "tensor_shape": [
+      16,
+      16,
+      3600
+    ]
+  },
+  "schema_version": 1,
+  "source_files": {
+    "configs/paper.yaml": "c0532b4a9ad0ae2ff00d322cf4f33665f5d2194841f1aa585be805c7510b5a1d",
+    "configs/smoke.yaml": "358c3fd4555884e21526210f6eb54f4ba00d3c029f457068707a4fdd7e08093f",
+    "pyproject.toml": "176f7d9b177e483ae3a2979ce68b861937b41fddb2310fb47036cfd22abec7cc",
+    "requirements-ci.txt": "3bd2d1e4e7b8977b716d714fc4f0e10a6ab7ccec69b7936e8fc3c16ff998493b",
+    "requirements-lock.txt": "33afae9e2b4e74d180fc7da63207185753a614477b4fb92a29fc1df359d7ca1e",
+    "src/rotation_patterns/__init__.py": "a8c26bbbbe1eacdfdaf7ababfd81f30a3dde9e18fc1311a7c4c4c4799d7b408e",
+    "src/rotation_patterns/__main__.py": "76fa916e93e0ae1a6c1bb51dcc0bcf289c014e9f760a47165f8a84401ccf41d7",
+    "src/rotation_patterns/analysis_receipt.py": "07fc16a72d6c9e0022cfab5d65d4fbda7a57d96cd3f19a1498931b261ebba4f0",
+    "src/rotation_patterns/cli.py": "abb642fe587cbda688091b13c6088db76ef90a17e7a1cdfc9b2d31da578e8447",
+    "src/rotation_patterns/compute.py": "7daaede6f70dc6eee3ed0825097522cb26cc37fd3fb622bf7be8bfaca000c189",
+    "src/rotation_patterns/config.py": "ad48f8aeed3a1ad4443e271a7aedd8fbcf467a8e275bcde5a80b1972cbc300a5",
+    "src/rotation_patterns/data.py": "6ac4741691aa6d57683d0e3608b1a00ee2ce9cf4dea39c6d392d41321b7c90d2",
+    "src/rotation_patterns/experiments/__init__.py": "9e1316276354b2e016fd54f2479e32865ab60a4e960c4103d21501e2b4fc658d",
+    "src/rotation_patterns/experiments/classification.py": "93db07258173031e72719323f6085a165f38c51acba5f340abdc2576fc193dd6",
+    "src/rotation_patterns/experiments/hog.py": "212731b6717303e8426ebfebf739b5d174e10f02819e7e708054ad4834952617",
+    "src/rotation_patterns/experiments/segmentation.py": "d9086d1ec703923c4ef32d77b81795704562840519434366f88dc72caf4af652",
+    "src/rotation_patterns/figures.py": "e55bc0f2880cf179227be9dd88e912687e55337a4f6377e359dac073df2ca888",
+    "src/rotation_patterns/manifest.py": "73bbdb5d3e7ff7f4b54edf54f7cf6b2988d2ede179ca646b801f9556d82df091",
+    "src/rotation_patterns/models.py": "97da9274f3d596ddf8c6bdb8fd731c500cfd879af6ed2c4e6891799e6acc45b9",
+    "src/rotation_patterns/prediction.py": "ae4f53b08ae4d80cb336eeac714b9d2177f0aacd54feec2231cd222a0066b306",
+    "src/rotation_patterns/reference.py": "4444ae544c8741d9d29c3a3d0f8d423038ff5350fdb16810e50d6e82b57ab778",
+    "src/rotation_patterns/reference_data/__init__.py": "b5c30d1e31219ee358bcbb2e3ca2bad6de65d3a7440c58fdc90b000a8152b0a7",
+    "src/rotation_patterns/reproducibility.py": "d4edcf0eea0e61c71afd321695b32526a062628d1fc1e0202303eec959210669",
+    "src/rotation_patterns/results.py": "97d4d7656bdbab3bd05761fc251960eeddfe622529f942a3821dce6dcf12b629",
+    "src/rotation_patterns/smoke.py": "ce8b4c0547b492458efe0fab4fbb30a63ad90d6d29d687335173828974fbac47",
+    "src/rotation_patterns/training.py": "43abb2416daa8703cb9fd724525fa10e26f1e7cc8bf7b1203b1ba32d29d2ff3c"
+  },
+  "source_sha256": "4776ebedd52ff51523034e2ac9eac030f599c7e35760ed2785837a47e600933c",
+  "test_axis_indices": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "train_axis_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ]
+}

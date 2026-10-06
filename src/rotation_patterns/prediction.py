@@ -16,9 +16,10 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from pathlib import Path
 import tempfile
-from typing import Any, Iterable
+from collections.abc import Iterable
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -26,7 +27,6 @@ import pandas as pd
 from .config import ExperimentConfig
 from .reference import ReferenceCurves, load_reference
 from .reproducibility import PROTOCOL_VERSION, config_digest
-
 
 # Red numeric labels printed in the published Figure 2. I retain them here so comparison
 # with my explicit Appendix C implementation remains machine-readable.

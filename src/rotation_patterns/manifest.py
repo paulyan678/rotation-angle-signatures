@@ -5,9 +5,10 @@ from __future__ import annotations
 import csv
 import json
 import os
-from pathlib import Path
 import tempfile
-from typing import Any, Iterable, Iterator
+from collections.abc import Iterable, Iterator
+from pathlib import Path
+from typing import Any
 
 from .config import ExperimentConfig
 from .reproducibility import PROTOCOL_VERSION, config_digest, stable_job_id
