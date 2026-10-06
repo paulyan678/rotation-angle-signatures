@@ -10,7 +10,6 @@ from rotation_patterns.models import (
     soft_dice_loss,
 )
 
-
 SETTINGS = {
     "imagenet_initialized": False,
     "projection_hidden_dim": 16,

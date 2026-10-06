@@ -3,7 +3,7 @@
 [![CI](https://github.com/paulyan678/rotation-angle-signatures/actions/workflows/ci.yml/badge.svg)](https://github.com/paulyan678/rotation-angle-signatures/actions/workflows/ci.yml)
 [![Paper](https://img.shields.io/badge/paper-OpenReview-b31b1b)](https://openreview.net/forum?id=85rdlgTS50)
 
-This repository contains the complete executable research code and experiment toolkit for
+This repository contains executable research code and a documented reconstruction toolkit for
 my thesis research project in the Engineering Science program at the University of
 Toronto:
 
@@ -13,6 +13,22 @@ Toronto:
 I conducted this work with Amy Saranchuk and Michael Guerzhoy. We presented it at the
 NeurIPS 2025 Workshop on Symmetry and Geometry in Neural Representations
 ([paper and reviews](https://openreview.net/forum?id=85rdlgTS50)).
+
+## Current proof and historical boundaries
+
+The workshop publication and its Figure 1 curves are historical research. The
+current Appendix C classifier does **not** reproduce the printed Figure 2 means;
+its exact outputs, known-answer tests, and immutable execution receipt are kept
+separately in [current analysis](results/current-analysis/README.md). Real-image
+training and medical HoG/segmentation results are not certified by synthetic smoke.
+
+```bash
+python -m rotation_patterns.analysis_receipt --output outputs/current-analysis
+```
+
+This command only analyzes the bundled measurements. See
+[analysis decisions and unresolved gaps](docs/ANALYSIS_RECEIPTS.md) for the original
+artifact search, transductive classification protocol, and tested environment.
 
 ## About my research
 
@@ -63,14 +79,17 @@ python -m pip install --upgrade pip
 python -m pip install -e '.[dev,medical]'
 ```
 
-Python 3.10+ is required. I strongly recommend a CUDA GPU for any non-smoke training.
-For the exact environment I used to validate the project, install the lock before the
-package:
+Python 3.10+ is required; the current tested and CI interpreter is Python 3.12.
+I strongly recommend a CUDA GPU for any non-smoke training. For the pinned
+environment used to validate the October 2026 fixes, install:
 
 ```bash
-python -m pip install -r requirements-lock.txt
-python -m pip install -e .
+python -m pip install -r requirements-ci.txt
+python -m pip install --no-deps -e .
 ```
+
+`requirements-lock.txt` preserves the older validation environment. Neither
+environment file proves that the original paper's full training grid was rerun.
 
 ## Explore my published Figure 1 and curve analysis
 

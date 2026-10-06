@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 import yaml
 
@@ -22,7 +23,7 @@ class AngleGrid:
     inclusive: bool = True
 
     @classmethod
-    def from_mapping(cls, value: dict[str, Any]) -> "AngleGrid":
+    def from_mapping(cls, value: dict[str, Any]) -> AngleGrid:
         try:
             grid = cls(
                 start=Decimal(str(value["start"])),

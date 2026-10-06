@@ -2,21 +2,20 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import hashlib
-from importlib import resources
 import json
 import os
-from pathlib import Path
 import re
 import shutil
 import tempfile
+from dataclasses import dataclass
+from importlib import resources
+from pathlib import Path
 from typing import Any
 
 import numpy as np
 
 from .config import ExperimentConfig
-
 
 EXPECTED_SHAPE = (16, 16, 3600)
 BUNDLED_ARTIFACT = "figure1_curves.npz"

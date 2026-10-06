@@ -9,8 +9,8 @@ from pathlib import Path
 
 from .config import load_config
 from .manifest import expected_job_counts, read_job, write_manifests
-from .results import aggregate_results, result_path, validate_result
 from .reproducibility import PROTOCOL_VERSION, config_digest
+from .results import aggregate_results, result_path, validate_result
 
 
 def _run_task(config_path: Path, manifest_path: Path, index: int, force: bool) -> Path:
